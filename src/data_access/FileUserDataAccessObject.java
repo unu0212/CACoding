@@ -7,11 +7,10 @@ import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface, ClearUserDataAccessInterface{
+public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface, ClearUserDataAccessInterface {
 
     private final File csvFile;
 
@@ -84,34 +83,8 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
             throw new RuntimeException(e);
         }
     }
-    public ArrayList<String> delete() {
-        ArrayList<String> users = new ArrayList<String>();
-
-        if (csvFile.length() == 0) {
-
-            users.add("There are no users to delete");
-
-            return users;
-        }
-        else {
-            Set<String> n = accounts.keySet();
-            for (String key : n) {
-                users.add(key);
-            }
-
-            try {
-                FileWriter filewriter = new FileWriter(csvFile);
-                filewriter.close();
 
 
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            return users;
-        }
-
-    }
 
 
     /**
@@ -121,9 +94,19 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
      * @return whether a user exists with username identifier
      */
     @Override
+
     public boolean existsByName(String identifier) {
         return accounts.containsKey(identifier);
     }
 
+    public List<String> clear(){
+        List<String> users = new ArrayList<>();
+        for(String user : accounts.keySet()){
+            users.add(user);
+        }
+        accounts.clear();
+        this.save();
+        return users;
+    }
 
 }

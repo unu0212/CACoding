@@ -30,13 +30,12 @@ public class SignupUseCaseFactory {
     private SignupUseCaseFactory() {}
 
     public static SignupView create(
-            ViewManagerModel viewManagerModel, LoginViewModel loginViewModel, SignupViewModel signupViewModel, SignupUserDataAccessInterface userDataAccessObject,
-            ClearViewModel clearViewModel, ClearUserDataAccessInterface clearUserDataAccessInterface) {
+            ViewManagerModel viewManagerModel, LoginViewModel loginViewModel, SignupViewModel signupViewModel, SignupUserDataAccessInterface userDataAccessObject, ClearViewModel clearViewModel, ClearUserDataAccessInterface clearUserDataAccessInterface) {
 
         try {
             SignupController signupController = createUserSignupUseCase(viewManagerModel, signupViewModel, loginViewModel, userDataAccessObject);
-            ClearController clearController = createClear(clearViewModel,viewManagerModel, clearUserDataAccessInterface);
-            return new SignupView(signupController, signupViewModel, clearController);
+            ClearController clearController = createClearUseCase(viewManagerModel, clearViewModel, clearUserDataAccessInterface);
+            return new SignupView(signupController, signupViewModel, clearController, clearViewModel);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }
@@ -56,9 +55,11 @@ public class SignupUseCaseFactory {
 
         return new SignupController(userSignupInteractor);
     }
-    private static ClearController createClear(ClearViewModel clearViewModel, ViewManagerModel viewManagerModel, ClearUserDataAccessInterface userDataAccessInterface)throws IOException{
+    private static ClearController createClearUseCase(ViewManagerModel viewManagerModel, ClearViewModel clearViewModel, ClearUserDataAccessInterface clearUserDataAccessInterface) throws IOException{
         ClearOutputBoundary clearOutputBoundary = new ClearPresenter(clearViewModel, viewManagerModel);
-        ClearInputBoundary clearInputBoundary = new ClearInteractor(userDataAccessInterface, clearOutputBoundary);
-        return new ClearController(clearInputBoundary);
+        ClearInputBoundary clearInteractor = new ClearInteractor(clearUserDataAccessInterface, clearOutputBoundary);
+        return new ClearController(clearInteractor);
     }
-}
+
+    }
+

@@ -8,7 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class ClearViewModel extends ViewModel {
-    private ClearState state = new ClearState();
+    public ClearState state = new ClearState();
 
     public ClearViewModel() {
         super("clear");
@@ -20,12 +20,12 @@ public class ClearViewModel extends ViewModel {
 
     @Override
     public void firePropertyChanged() {
-
+        support.firePropertyChange("state", null, this.state);
     }
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-
+        support.addPropertyChangeListener(listener);
     }
 
 }
